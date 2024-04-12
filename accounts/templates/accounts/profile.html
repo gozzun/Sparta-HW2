@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ member.username }}의 프로필 페이지</h1>
+
+    <div>
+        <h2>username : {{ member.username }}</h2>
+        {% if request.user == member %}
+            <a href="{% url 'accounts:update' %}">회원정보수정</a>
+        {% endif %}
+        <h3>가입일: {{ member.created_at }}</h3>
+        <p>
+            팔로워 : {{ member.followers.count }}명
+            팔로잉 : {{ member.following.count }}명
+        </p>
+    </div>
+
+    <div>
+        {% if request.user != member %}
+        <form action="{% url 'accounts:follow' member.pk %}" method="POST">
+            {% csrf_token %}
+            {% if user in member.followers.all %}
+                <button type="submit">언팔로우</button>
+            {% else %}
+                <button type="submit">팔로우</button>
+            {% endif %}
+        </form>
+        {% endif %}
+    </div>
+
+    <div>
+        <h2>{{ member.username }}님이 작성한 판매글</h2>
+        <ul>
+            {% for post in member.products.all %}
+                <li><div style="display: inline;"><a href="{% url 'products:product_detail' post.pk %}">{{ post.title }}</a></div></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div>
+        <h2>{{ member.username }}님이 찜한 물건</h2>
+        <ul>
+            {% for liked_post in member.like_products.all %}
+                <li><div style="display: inline;"><a href="{% url 'products:product_detail' liked_post.pk %}">{{ liked_post.title }} - {{ liked_post.author.username }}</a></div></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content %}
