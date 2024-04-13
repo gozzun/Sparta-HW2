@@ -7,6 +7,8 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from .forms import CustomUserChangeForm,CustomUserCreationForm
+import os
+from django.conf import settings
 # Create your views here.
 def profile(request, username):
     member = get_object_or_404(get_user_model(), username=username)
@@ -14,6 +16,21 @@ def profile(request, username):
 			"member": member,
 	}
     return render(request, "accounts/profile.html", context)
+
+@login_required
+@require_POST
+def update_image(request):
+    if request.FILES.get('image'):
+        request.user.image = request.FILES['image']
+        request.user.save()
+    return redirect('accounts:profile', username=request.user.username)
+
+@login_required
+@require_POST
+def delete_image(request):
+    if request.user.image:
+        request.user.image.delete()
+    return redirect('accounts:profile', username=request.user.username)
 
 @require_POST
 def follow(request, user_id):
@@ -29,7 +46,7 @@ def follow(request, user_id):
 
 def signup(request):
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             auth_login(request, user) #가입하고 바로 로그인이 되게끔
@@ -88,6 +105,9 @@ def change_password(request):
 @require_POST
 def delete(request):
     if request.user.is_authenticated:
+        image_path = os.path.join(settings.MEDIA_ROOT, str(request.user.image))
+        if os.path.exists(image_path): #image_path가 존재하면 이미지 삭제
+            os.remove(image_path)
         request.user.delete()
         auth_logout(request) #탈퇴 후 세션 지우기 / 순서 바뀌면 안됨.
     return redirect("products:products")

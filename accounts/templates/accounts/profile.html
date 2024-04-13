@@ -1,9 +1,27 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
     <h1>{{ member.username }}의 프로필 페이지</h1>
 
     <div>
+        {% if member.image %}
+		    <img src="{{ member.image.url }}">
+        {% else %}
+            <img src="{% static 'accounts/user.png' %}">
+        {% endif %}	
+        {% if request.user == member %}
+            <form action="{% url 'accounts:update_image' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="image"><br>
+                <button type="submit">사진 수정</button>
+            </form>
+            (파일을 선택한 후 사진 수정 버튼을 누르면 사진이 수정됩니다.)
+            <form action="{% url 'accounts:delete_image' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">사진 삭제</button>
+            </form>
+        {% endif %}
         <h2>username : {{ member.username }}</h2>
         {% if request.user == member %}
             <a href="{% url 'accounts:update' %}">회원정보수정</a>
