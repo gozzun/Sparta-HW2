@@ -5,10 +5,11 @@
 <h1>New Product</h1>
 <!-- 미디어 전송을 위해 enctype 부분 추가 -->
 <!-- <form action="{% url 'products:create' %}" method="POST" enctype="multipart/form-data"> -->
-<form action="{% url 'products:create' %}" method="POST">
+<form action="{% url 'products:create' %}" method="POST" enctype="multipart/form-data">
 
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">저장</button>
+    (*이미지 파일은 수정이 불가합니다.)
 </form>
 {% endblock content %}

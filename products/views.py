@@ -4,11 +4,16 @@ from .forms import ProductForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
+from django.db.models import Count
 
 # Create your views here.
 def products(request):
-
-    products = Product.objects.all().order_by("-id")
+    order_by = request.GET.get('order_by', 'latest')
+    if order_by == 'latest':
+        products = Product.objects.order_by('-created_at')
+    elif order_by == 'liked':
+        #annotate 함수를 사용할 경우 products queryset의 각 객체에 like_count 필드가 추가됨.
+        products = Product.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-created_at')
     context = {
         "products": products,
     }
@@ -18,6 +23,7 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk) #500번대 에러 -> 404로 대체
     # comment_form = CommentForm()
     # comments = product.comments.all() # view를 건드리지 않고, html에서도 가능
+    product.increment_views()
     context = {
         "product": product,
         # "comment_form": comment_form,
