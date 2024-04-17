@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Product
+from .models import Product, Hashtag
 from .forms import ProductForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -21,11 +21,13 @@ def products(request):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk) #500번대 에러 -> 404로 대체
+    hashtag = product.hashtags.all()
     # comment_form = CommentForm()
     # comments = product.comments.all() # view를 건드리지 않고, html에서도 가능
     product.increment_views()
     context = {
         "product": product,
+        "hashtag": hashtag,
         # "comment_form": comment_form,
         # "comments": comments,
     }
@@ -40,6 +42,10 @@ def create(request):
             product = form.save(commit=False)
             product.author = request.user
             product.save()
+            hashtags = form.cleaned_data.get('hashtags') #cleaned_data: form 입력값을 dict(key-value) 형태로 반환, get('hashtags'):key가 hashtags인 value 값들을 리스트로 출력.
+            for name in hashtags:
+                hashtag, _ = Hashtag.objects.get_or_create(name=name) #get_or_create(): (객체,생성 여부)
+                product.hashtags.add(hashtag)
             return redirect("products:product_detail", product.id)
     else:
         form = ProductForm()
@@ -75,7 +81,6 @@ def delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.user.is_authenticated:
         if product.author == request.user:
-            product = get_object_or_404(Product, pk=pk)
             product.delete()
     return redirect("products:products")
 

@@ -23,6 +23,13 @@
                     <div>[{{ product.id }}] {{ product.title }} - {{ product.author.username }}</div>
                 </a>
                 {{ product.created_at }}
+                <br>
+                {% if product.hashtags.all %}
+                해시태그:
+                {% for hashtag in product.hashtags.all %}
+                    {{ hashtag.name }}
+                {% endfor %}
+                {% endif %}
                 <form action="{% url 'products:like' product.pk %}" method="POST">
                     {% csrf_token %}
                     {% if user in product.like_users.all %}

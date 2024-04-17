@@ -16,8 +16,13 @@
     <p>작성일시: {{ product.created_at }}</p>
     <p>수정일시: {{ product.updated_at }}</p>
     <p>좋아요: {{ product.like_users.count }}</p>
+    
+    해시태그:
+    {% for tag in hashtag %}
+        {{ tag.name }}
+    {% endfor %}
 
-    <a href="{% url 'products:products' %}"><button>목록 보기</button></a>
+    <a href="{% url 'products:products' %}"><br><button>목록 보기</button></a>
     <hr>
     {% if user == product.author %}
     <a href="{% url 'products:update' product.pk %}"><button>글수정</button></a>
