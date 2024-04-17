@@ -5,7 +5,7 @@ from products.models import Product, Hashtag
 #model form은 모델을 참고하여 모델 필드를 보고 form을 생성한다.
 #product:제목, 내용, 생성시간, 바뀐시간 -> form: 제목, 내용 
 class ProductForm(forms.ModelForm):
-    hashtags = forms.CharField(max_length=20, help_text='(#을 입력 후 한 칸을 띄고 입력하세요. 입력 예시: #해시태그 #해시)')
+    hashtags = forms.CharField(max_length=20, help_text='#을 입력 후 한 칸을 띄고 입력하세요. 입력 예시: #해시태그 #해시')
 
     class Meta:
         model = Product

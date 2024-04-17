@@ -7,7 +7,7 @@
     <div style="display: inline;">작성자: <a href="{% url 'accounts:profile' product.author.username %}">{{ product.author.username }}</a></div>
     <!-- 이미지가 있는 product인 경우 출력 -->
     {% if product.image %}
-		<img src="{{ product.image.url }}">
+		<br><img src="{{ product.image.url }}">
     {% endif %}		
 
     <br>

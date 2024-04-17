@@ -16,6 +16,10 @@
         <a href="{% url 'accounts:login' %}">로그인하고 글 작성하기</a>
     {% endif %}
 
+    <form method="GET" action="{% url 'products:products' %}">
+        <input type="text" name="search"><button class="btn btn-outline-success" type="submit">검색</button>
+    </form>
+
     <ul>
         {% for product in products %}
             <li>

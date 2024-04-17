@@ -4,16 +4,26 @@ from .forms import ProductForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST
-from django.db.models import Count
+from django.db.models import Count, Q
 
 # Create your views here.
 def products(request):
     order_by = request.GET.get('order_by', 'latest')
+    search = request.GET.get('search')
     if order_by == 'latest':
         products = Product.objects.order_by('-created_at')
     elif order_by == 'liked':
         #annotate 함수를 사용할 경우 products queryset의 각 객체에 like_count 필드가 추가됨.
         products = Product.objects.annotate(like_count=Count('like_users')).order_by('-like_count', '-created_at')
+    
+    if search:
+        products = products.filter(
+            Q(title__icontains=search) |  # 제목에 검색어가 포함된 경우
+            Q(content__icontains=search) |  # 물건 설명에 검색어가 포함된 경우
+            Q(hashtags__name__icontains=search) |  # 해시태그에 검색어가 포함된 경우
+            Q(author__username__icontains=search)  # 유저네임에 검색어가 포함된 경우
+        ).distinct()  # 중복된 결과 제거
+    
     context = {
         "products": products,
     }
@@ -74,7 +84,6 @@ def update(request, pk):
         "product": product,
     }
     return render(request, "products/update.html", context)
-
 
 @require_POST
 def delete(request, pk):
