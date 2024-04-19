@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Products</h1>
+    <h1>물건 목록</h1>
     <form method="GET" action="{% url 'products:products' %}">
         <select name="order_by">
             <option value="latest">최신순</option>
@@ -20,37 +20,37 @@
         <input type="text" name="search"><button class="btn btn-outline-success" type="submit">검색</button>
     </form>
 
-    <ul>
+    <ul class="product-list">
         {% for product in products %}
             <li>
                 <a href="{% url 'products:product_detail' product.id %}">
                     <div>[{{ product.id }}] {{ product.title }} - {{ product.author.username }}</div>
                 </a>
-                {{ product.created_at }}
-                <br>
-                {% if product.hashtags.all %}
-                해시태그:
-                {% for hashtag in product.hashtags.all %}
-                    {{ hashtag.name }}
-                {% endfor %}
-                {% endif %}
-                <form action="{% url 'products:like' product.pk %}" method="POST">
-                    {% csrf_token %}
-                    {% if user in product.like_users.all %}
-                    <button class="btn btn-link text-danger">
-                        <i class="fa-solid fa-heart"></i>
-                    </button>
-                    {{ product.like_users.count }}
-                    {% else %}
-                    <button class="btn btn-link text-danger">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
-                    {{ product.like_users.count }}
+                <div class="product-info">
+                    {{ product.created_at }}
+                    <br>
+                    {% if product.hashtags.all %}
+                    해시태그:
+                    {% for hashtag in product.hashtags.all %}
+                        {{ hashtag.name }}
+                    {% endfor %}
                     {% endif %}
-                </form>
-                <br>
+                    <form action="{% url 'products:like' product.pk %}" method="POST">
+                        {% csrf_token %}
+                        {% if user in product.like_users.all %}
+                        <button class="btn btn-link text-danger">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                        {{ product.like_users.count }}
+                        {% else %}
+                        <button class="btn btn-link text-danger">
+                            <i class="fa-regular fa-heart"></i>
+                        </button>
+                        {{ product.like_users.count }}
+                        {% endif %}
+                    </form>
+                </div>
             </li>
         {% endfor %}
     </ul>
-
 {% endblock content %}

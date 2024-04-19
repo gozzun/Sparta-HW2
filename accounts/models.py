@@ -9,5 +9,3 @@ class User(AbstractUser):
     )
     image = models.ImageField(upload_to="images/", blank=True) #이미지 추가
     created_at = models.DateTimeField(auto_now_add=True)
-    # products = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="created_by")
-    # like_products = models.ManyToManyField(Product, related_name="liked_by")

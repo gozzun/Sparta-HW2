@@ -1,58 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-    <h2>글 상세 페이지</h2>
+    <h2>물건 상세 페이지</h2>
     <p>제목: {{ product.title }}</p>
-    <div style="display: inline;">작성자: <a href="{% url 'accounts:profile' product.author.username %}">{{ product.author.username }}</a></div>
-    <!-- 이미지가 있는 product인 경우 출력 -->
-    {% if product.image %}
-		<br><img src="{{ product.image.url }}">
-    {% endif %}		
+    <div class="product-info">
+        작성자: <a href="{% url 'accounts:profile' product.author.username %}">{{ product.author.username }}</a>
+        <!-- 이미지가 있는 product인 경우 출력 -->
+        {% if product.image %}
+            <br><img src="{{ product.image.url }}">
+        {% endif %}		
 
-    <br>
-    <p>내용: {{ product.content }}</p>
-    <p>조회수: {{ product.views }}</p>
-    <p>작성일시: {{ product.created_at }}</p>
-    <p>수정일시: {{ product.updated_at }}</p>
-    <p>좋아요: {{ product.like_users.count }}</p>
-    
-    해시태그:
-    {% for tag in hashtag %}
-        {{ tag.name }}
-    {% endfor %}
-
-    <a href="{% url 'products:products' %}"><br><button>목록 보기</button></a>
-    <hr>
-    {% if user == product.author %}
-    <a href="{% url 'products:update' product.pk %}"><button>글수정</button></a>
-    <form action="{% url 'products:delete' product.pk %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="글삭제">
-    </form>
-    {% endif %}
-
-    {% comment %}
-    <hr>
-    <h3>댓글 {{ comments|length }}개</h3>
-    {% if request.user.is_authenticated %}
-    <form action="{% url 'products:comment_create' product.pk %}" method="POST">
-        {% csrf_token %}
-        {{ comment_form.as_p }}
-        <input type="submit" value="댓글작성">
-    </form>
-    {% endif %} 
-
-    <ul>
-        {% for comment in comments %}
-            <li>{{ comment.content }} - {{ comment.user.username }}</li>
-            {% if user == comment.user %}
-            <form action="{% url 'products:comment_delete' product.pk comment.pk%}" method="POST">
-                {% csrf_token %}
-                <input type="submit" value="삭제">
-            </form>
-            {% endif %}
+        <br>
+        <p>내용: {{ product.content }}</p>
+        <p>조회수: {{ product.views }}</p>
+        <p>작성일시: {{ product.created_at }}</p>
+        <p>수정일시: {{ product.updated_at }}</p>
+        <p>좋아요: {{ product.like_users.count }}</p>
+        
+        해시태그:
+        {% for tag in hashtag %}
+            {{ tag.name }}
         {% endfor %}
-    </ul>
-    {% endcomment %}
+
+        <a href="{% url 'products:products' %}"><br><button class="btn btn-primary">목록 보기</button></a>
+        <hr>
+        {% if user == product.author %}
+        <a href="{% url 'products:update' product.pk %}"><button class="btn btn-secondary">글수정</button></a>
+        <form action="{% url 'products:delete' product.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="글삭제" class="btn btn-danger">
+        </form>
+        {% endif %}
+    </div>
 {% endblock content %}

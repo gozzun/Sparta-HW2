@@ -1,7 +1,6 @@
 from django import forms
 
 from products.models import Product, Hashtag
-# from products.models import Comment
 #model form은 모델을 참고하여 모델 필드를 보고 form을 생성한다.
 #product:제목, 내용, 생성시간, 바뀐시간 -> form: 제목, 내용 
 class ProductForm(forms.ModelForm):
@@ -27,25 +26,3 @@ class ProductForm(forms.ModelForm):
             seen.add(name)
         return hashtags
     
-#그냥 위 productform에다가 합쳐버릴수는 없나...?
-# class HashtagForm(forms.ModelForm):
-#     class Meta:
-#         Model = Hashtag
-#         fields = "__all__"
-    
-#     def clean_hashtag(self):
-#         name = self.cleaned_data.get('name') #cleaned_data: 적절한 데이터로 판명될 시 name에 저장
-
-#         if Hashtag.objects.filter(name=name).exists():
-#             raise forms.ValidationError("각 게시물은 중복된 해시태그를 설정할 수 없습니다.")
-
-#         if ' ' in name or any(char in '!@#$%^&*()[]{};:,.<>?/~`"' for char in name):
-#             raise forms.ValidationError("해시태그는 띄어쓰기와 특수문자가 허용되지 않습니다.")
-
-#         return name
-
-# class CommentForm(forms.ModelForm):
-#     class Meta:
-#         model = Comment
-#         fields = "__all__"
-#         exclude = ("product","user",)

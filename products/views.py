@@ -18,10 +18,10 @@ def products(request):
     
     if search:
         products = products.filter(
-            Q(title__icontains=search) |  # 제목에 검색어가 포함된 경우
-            Q(content__icontains=search) |  # 물건 설명에 검색어가 포함된 경우
-            Q(hashtags__name__icontains=search) |  # 해시태그에 검색어가 포함된 경우
-            Q(author__username__icontains=search)  # 유저네임에 검색어가 포함된 경우
+            Q(title__icontains=search) |  
+            Q(content__icontains=search) |  
+            Q(hashtags__name__icontains=search) |  
+            Q(author__username__icontains=search) 
         ).distinct()  # 중복된 결과 제거
     
     context = {
@@ -32,14 +32,10 @@ def products(request):
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk) #500번대 에러 -> 404로 대체
     hashtag = product.hashtags.all()
-    # comment_form = CommentForm()
-    # comments = product.comments.all() # view를 건드리지 않고, html에서도 가능
     product.increment_views()
     context = {
         "product": product,
         "hashtag": hashtag,
-        # "comment_form": comment_form,
-        # "comments": comments,
     }
     return render(request, "products/product_detail.html", context)
 

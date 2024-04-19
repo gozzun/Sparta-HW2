@@ -70,8 +70,6 @@ def login(request):
 
 @require_POST #POST 요청만 가능
 def logout(request):
-    # if request.method == "POST":
-    #     auth_logout(request)
     if request.user.is_authenticated:
         auth_logout(request)
     return redirect("products:products")
