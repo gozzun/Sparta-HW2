@@ -1,3 +1,10 @@
+실행:
+1. git clone https://github.com/gozzun/Sparta-HW2
+2. cd Sparta-HW2
+3. pip install -r requirements.txt
+4. python manage.py migrate
+5. python manage.py runserver
+
 <스파르타마켓> 
 -회원만 서비스 이용 가능, 각 유저는 물건을 등록하고 찜을 누를 수 있음. 구매하기 구현X
 
